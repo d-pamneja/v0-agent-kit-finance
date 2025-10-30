@@ -7,8 +7,8 @@ import { Suspense } from "react"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Agent Kit Reasoning",
-  description: "AI-powered search and chat interface by Lamatic.ai",
+  title: "Agent Kit Finance",
+  description: "AI-powered stock analysis and portfolio comparison by Lamatic.ai",
   generator: "v0.app",
 }
 

@@ -29,25 +29,44 @@ interface ComparativeAnalysisDisplayProps {
 function ChartRenderer({ chartData }: { chartData: ChartData }) {
   const [isExpanded, setIsExpanded] = useState(true)
 
-  const renderChart = () => {
+  const ChartComponent = useMemo(() => {
     try {
-      const code = chartData.code
+      // Dynamically create a React component from the chart code string
+      const componentFactory = new Function(
+        "React",
+        "Recharts",
+        `
+        ${chartData.code};
+        return exports.default || module.exports || ScoreComparisonChart || StockPerformanceChart || CompositeRadarChart;
+      `
+      )
 
-      // Detect chart type from code string
-      if (code.includes("BarChart")) {
-        return <BarChartComponent />
-      } else if (code.includes("LineChart")) {
-        return <LineChartComponent />
-      } else if (code.includes("AreaChart")) {
-        return <AreaChartComponent />
-      }
+      const component = componentFactory(React, {
+        BarChart,
+        Bar,
+        LineChart,
+        Line,
+        AreaChart,
+        Area,
+        XAxis,
+        YAxis,
+        CartesianGrid,
+        Tooltip,
+        Legend,
+        ResponsiveContainer,
+        Radar,
+        RadarChart,
+        PolarGrid,
+        PolarAngleAxis,
+        PolarRadiusAxis,
+      })
 
-      return <div className="text-sm text-muted-foreground p-4">Chart type not supported</div>
+      return component
     } catch (err) {
-      console.error("[v0] Error rendering chart:", err)
-      return <div className="text-sm text-red-600">Error rendering chart</div>
+      console.error("Error compiling chart code:", err)
+      return () => <div className="text-red-600">Error rendering chart</div>
     }
-  }
+  }, [chartData.code])
 
   return (
     <Card className="overflow-hidden">
@@ -66,10 +85,15 @@ function ChartRenderer({ chartData }: { chartData: ChartData }) {
         )}
       </button>
 
-      {isExpanded && <div className="p-6 bg-background">{renderChart()}</div>}
+      {isExpanded && (
+        <div className="p-6 bg-background">
+          <ChartComponent />
+        </div>
+      )}
     </Card>
   )
 }
+
 
 function BarChartComponent() {
   // Sample data for demonstration

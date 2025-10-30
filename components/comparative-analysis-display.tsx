@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState,useMemo } from "react"
 import { Card } from "@/components/ui/card"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import ReactMarkdown from "react-markdown"

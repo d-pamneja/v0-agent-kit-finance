@@ -140,13 +140,6 @@ export default function FinanceKit() {
         {/* Main Content */}
         <div className="flex-1 px-6 py-12">
           <div className="max-w-7xl mx-auto space-y-8">
-            {isLoading && (
-              <div>
-                <h2 className="text-2xl font-bold text-foreground mb-4">Analysis</h2>
-                <AnalysisLoadingSkeleton />
-              </div>
-            )}
-
             {/* Company Profiles */}
             <CompanyProfilesDisplay
               profiles={companyProfiles}
@@ -156,8 +149,15 @@ export default function FinanceKit() {
               }}
             />
 
+            {isLoading && (
+              <div id="comparative-analysis-section">
+                <h2 className="text-2xl font-bold text-foreground mb-4">Analysis</h2>
+                <AnalysisLoadingSkeleton />
+              </div>
+            )}
+
             {comparativeAnalysis && !isLoading && (
-              <div>
+              <div id="comparative-analysis-section">
                 <h2 className="text-2xl font-bold text-foreground mb-4">Comparative Analysis</h2>
                 <ComparativeAnalysisDisplay
                   analysis={comparativeAnalysis.analysis}

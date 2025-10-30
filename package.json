@@ -65,6 +65,7 @@
     "react-resizable-panels": "latest",
     "react-simple-typewriter": "^5.0.1",
     "recharts": "latest",
+    "remark-gfm": "latest",
     "sonner": "latest",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",

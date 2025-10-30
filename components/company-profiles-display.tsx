@@ -264,6 +264,18 @@ export function CompanyProfilesDisplay({ profiles, onBack }: CompanyProfilesDisp
           </div>
         )}
       </Card>
+
+      <div className="flex justify-center pt-4">
+        <button
+          onClick={() => {
+            const analysisSection = document.getElementById("comparative-analysis-section")
+            analysisSection?.scrollIntoView({ behavior: "smooth" })
+          }}
+          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors text-sm font-medium"
+        >
+          Jump to Analysis ↓
+        </button>
+      </div>
     </div>
   )
 }

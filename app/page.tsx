@@ -140,6 +140,20 @@ export default function FinanceKit() {
         {/* Main Content */}
         <div className="flex-1 px-6 py-12">
           <div className="max-w-7xl mx-auto space-y-8">
+            {!comparativeAnalysis && (
+              <div className="text-center">
+                <Button
+                  onClick={() => {
+                    const element = document.getElementById("comparative-analysis-section")
+                    element?.scrollIntoView({ behavior: "smooth" })
+                  }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2"
+                >
+                  View Comparative Analysis ↓
+                </Button>
+              </div>
+            )}
+
             {/* Company Profiles */}
             <CompanyProfilesDisplay
               profiles={companyProfiles}

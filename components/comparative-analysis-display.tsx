@@ -6,7 +6,6 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import type { ChartData } from "@/actions/orchestrate"
-import React from "react"
 import {
   BarChart,
   Bar,
@@ -20,7 +19,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Cell,
 } from "recharts"
 
 interface ComparativeAnalysisDisplayProps {
@@ -30,86 +28,23 @@ interface ComparativeAnalysisDisplayProps {
 
 function ChartRenderer({ chartData }: { chartData: ChartData }) {
   const [isExpanded, setIsExpanded] = useState(true)
-  const [chartComponent, setChartComponent] = useState<React.ReactNode | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
   const renderChart = () => {
     try {
-      // Create a function from the code string
-      const chartCode = chartData.code
+      const code = chartData.code
 
-      // Create a module-like environment with required imports
-      const moduleCode = `
-        const React = require('react');
-        const { BarChart, Bar, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } = require('recharts');
-        
-        ${chartCode}
-      `
-
-      // Use Function constructor to safely execute the code
-      const chartFunction = new Function("React", "recharts", moduleCode)
-
-      // Get the recharts module
-      const recharts = {
-        BarChart,
-        Bar,
-        LineChart,
-        Line,
-        AreaChart,
-        Area,
-        XAxis,
-        YAxis,
-        CartesianGrid,
-        Tooltip,
-        Legend,
-        ResponsiveContainer,
-        Cell,
-      }
-
-      // Execute and get the default export
-      chartFunction(React, recharts)
-
-      // For now, we'll render a placeholder that shows the chart is loading
-      // The actual chart will be rendered via dynamic import
-      return renderChartFromCode(chartData.code)
-    } catch (err) {
-      console.error("[v0] Error rendering chart:", err)
-      setError(`Unable to render chart: ${err instanceof Error ? err.message : "Unknown error"}`)
-      return null
-    }
-  }
-
-  const renderChartFromCode = (code: string) => {
-    try {
-      // Import recharts components
-      const {
-        BarChart,
-        Bar,
-        LineChart,
-        Line,
-        AreaChart,
-        Area,
-        XAxis,
-        YAxis,
-        CartesianGrid,
-        Tooltip,
-        Legend,
-        ResponsiveContainer,
-        Cell,
-      } = require("recharts")
-
-      // Check chart type and render accordingly
+      // Detect chart type from code string
       if (code.includes("BarChart")) {
-        return <BarChartComponent code={code} />
+        return <BarChartComponent />
       } else if (code.includes("LineChart")) {
-        return <LineChartComponent code={code} />
+        return <LineChartComponent />
       } else if (code.includes("AreaChart")) {
-        return <AreaChartComponent code={code} />
+        return <AreaChartComponent />
       }
 
       return <div className="text-sm text-muted-foreground p-4">Chart type not supported</div>
     } catch (err) {
-      console.error("[v0] Error in renderChartFromCode:", err)
+      console.error("[v0] Error rendering chart:", err)
       return <div className="text-sm text-red-600">Error rendering chart</div>
     }
   }
@@ -131,18 +66,12 @@ function ChartRenderer({ chartData }: { chartData: ChartData }) {
         )}
       </button>
 
-      {isExpanded && (
-        <div className="p-6 bg-background">
-          {error ? <div className="text-sm text-red-600">{error}</div> : renderChart()}
-        </div>
-      )}
+      {isExpanded && <div className="p-6 bg-background">{renderChart()}</div>}
     </Card>
   )
 }
 
-function BarChartComponent({ code }: { code: string }) {
-  const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } = require("recharts")
-
+function BarChartComponent() {
   // Sample data for demonstration
   const data = [
     { name: "AAPL", Health: 0, Performance: 60, Sentiment: 50 },
@@ -165,9 +94,7 @@ function BarChartComponent({ code }: { code: string }) {
   )
 }
 
-function LineChartComponent({ code }: { code: string }) {
-  const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } = require("recharts")
-
+function LineChartComponent() {
   // Sample data for demonstration
   const data = [
     { date: "2022-01", AAPL: 150, TSLA: 900 },
@@ -193,9 +120,7 @@ function LineChartComponent({ code }: { code: string }) {
   )
 }
 
-function AreaChartComponent({ code }: { code: string }) {
-  const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } = require("recharts")
-
+function AreaChartComponent() {
   const data = [
     { date: "2022-01", AAPL: 150, TSLA: 900 },
     { date: "2022-06", AAPL: 140, TSLA: 700 },

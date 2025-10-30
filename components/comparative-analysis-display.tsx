@@ -6,20 +6,8 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import type { ChartData } from "@/actions/orchestrate"
-import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts"
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, AreaChart, Area, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
+import React from "react";
 
 interface ComparativeAnalysisDisplayProps {
   analysis: string
@@ -36,10 +24,13 @@ function ChartRenderer({ chartData }: { chartData: ChartData }) {
         "React",
         "Recharts",
         `
+        const exports = {};
+        const module = { exports };
         ${chartData.code};
-        return exports.default || module.exports || ScoreComparisonChart || StockPerformanceChart || CompositeRadarChart;
-      `
-      )
+        const Comp = exports.default || module.exports || Object.values(exports)[0];
+        return typeof Comp === "function" ? Comp : () => <div>Chart component missing default export</div>;
+        `
+      );
 
       const component = componentFactory(React, {
         BarChart,
@@ -59,9 +50,14 @@ function ChartRenderer({ chartData }: { chartData: ChartData }) {
         PolarGrid,
         PolarAngleAxis,
         PolarRadiusAxis,
-      })
+      });
 
-      return component
+      if (typeof component !== "function") {
+        throw new Error("Invalid chart component");
+      }
+
+      return component;
+
     } catch (err) {
       console.error("Error compiling chart code:", err)
       return () => <div className="text-red-600">Error rendering chart</div>
